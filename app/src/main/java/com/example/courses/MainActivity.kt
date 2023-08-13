@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.requiredHeightIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -95,7 +96,7 @@ fun GridOfTopics() {
         if(expanded==true) {
             listOfTopics.forEach{
                 if(it.hashCode()==identificatorOfCard){
-                    TopicShowing(it)
+                    TopicShowing(it) // Aqui debe ir otra composable function para que muestre el Card mas grande que tenga un boton cerrar.
                 }
             }
         }
@@ -138,7 +139,7 @@ fun TopicShowing(topic: Topic, modifier: Modifier=Modifier) {
                 style = MaterialTheme.typography.bodyMedium
             )
             Row(
-               /* modifier = Modifier
+                /*modifier = Modifier
                     .padding(top = 8.dp)
                    // .background(Color.Yellow)
                     .requiredHeight(textHeightDp),
