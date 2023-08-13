@@ -45,7 +45,7 @@ import androidx.compose.ui.unit.dp
 import com.example.courses.data.Datasource
 import com.example.courses.model.Topic
 import com.example.courses.ui.theme.CoursesTheme
-// MAS COMETARIOS PARA PROBAR/////////*
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,8 +63,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-// OTRO COMENTARIO MAS PARA PROBAR//////////////
-///////////////////////////////////////
+
 @Composable
 
 fun GridOfTopics() {
@@ -83,8 +82,7 @@ fun GridOfTopics() {
         }
     }
 }
-// COMEWNTARIO DE PRUEBA ////////////////
-///////////////////////////////
+
 
 @Composable
 fun TopicShowing(topic: Topic, modifier: Modifier = Modifier) {
@@ -97,7 +95,7 @@ fun TopicShowing(topic: Topic, modifier: Modifier = Modifier) {
     val courseQuantity = topic.courseQuantity.toString()
 
     Card( modifier = Modifier, elevation = CardDefaults.cardElevation(6.dp), shape= RoundedCornerShape(6.dp)) {
-    Row(modifier = Modifier.wrapContentSize()) {
+    Row() {
 
         Image(
             painter = painterResource(id = topic.imageResourceId),
@@ -105,18 +103,19 @@ fun TopicShowing(topic: Topic, modifier: Modifier = Modifier) {
             modifier = Modifier
                 .size(68.dp, 68.dp)
         )
-        Column(modifier = Modifier.wrapContentSize()) {
+        Column() {
             Text(
                 text = stringResource(id = topic.titleResourceId),
-                modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-                style = MaterialTheme.typography.bodySmall
+                modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom= 8.dp),
+                //style = MaterialTheme.typography.bodySmall
+                style = MaterialTheme.typography.bodyMedium
             )
             Row(
-                modifier = Modifier
+               /* modifier = Modifier
                     .padding(top = 8.dp)
                    // .background(Color.Yellow)
                     .requiredHeight(textHeightDp),
-                horizontalArrangement = Arrangement.Start,
+                horizontalArrangement = Arrangement.Start,*/
                 verticalAlignment = Alignment.CenterVertically,
             ) {
 
@@ -125,10 +124,10 @@ fun TopicShowing(topic: Topic, modifier: Modifier = Modifier) {
                     contentDescription = null,
                     modifier = Modifier
                         .padding(start = 16.dp)
-                        .padding(
+                      /*  .padding(
                             top = 2.dp,
                             bottom = 2.dp
-                        )//El Padding interno es para achicar el Icono
+                        )*///El Padding interno es para achicar el Icono
                 )
 
                 Text(
@@ -136,7 +135,8 @@ fun TopicShowing(topic: Topic, modifier: Modifier = Modifier) {
                     modifier = Modifier
                         .padding(start = 8.dp)
                         .fillMaxHeight(),
-                    style = textStyleHeight
+                    //style = textStyleHeight
+                    style = MaterialTheme.typography.labelMedium
                 )
 
             }
