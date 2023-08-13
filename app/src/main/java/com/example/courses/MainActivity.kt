@@ -2,17 +2,21 @@ package com.example.courses
 
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
@@ -32,6 +36,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -68,24 +76,37 @@ class MainActivity : ComponentActivity() {
 
 fun GridOfTopics() {
     val listOfTopics = Datasource.topics
+    var expanded by remember { mutableStateOf(false) }
+    var identificatorOfCard by remember { mutableStateOf(0) }
 
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
-        contentPadding = PaddingValues(8.dp, 8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        items(listOfTopics) { topic ->
+    Box(contentAlignment = Alignment.Center) {
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            contentPadding = PaddingValues(8.dp, 8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(listOfTopics) { topic ->
 
-            TopicShowing(topic)
+                TopicShowing(topic, modifier=Modifier.clickable(onClick = {expanded=!expanded ;identificatorOfCard = topic.hashCode(); Log.d("Expanded", "$expanded");Log.d("HashCodeCard", "$identificatorOfCard")}))
 
+            }
         }
+        if(expanded==true) {
+            listOfTopics.forEach{
+                if(it.hashCode()==identificatorOfCard){
+                    TopicShowing(it)
+                }
+            }
+        }
+
+
     }
 }
 
 
 @Composable
-fun TopicShowing(topic: Topic, modifier: Modifier = Modifier) {
+fun TopicShowing(topic: Topic, modifier: Modifier=Modifier) {
 
     val textStyleHeight =
         MaterialTheme.typography.labelSmall // Estilo de Texto de la Cantidad de Cursos
@@ -94,7 +115,13 @@ fun TopicShowing(topic: Topic, modifier: Modifier = Modifier) {
 
     val courseQuantity = topic.courseQuantity.toString()
 
-    Card( modifier = Modifier, elevation = CardDefaults.cardElevation(6.dp), shape= RoundedCornerShape(6.dp)) {
+
+
+    Card(
+        modifier = modifier,
+        elevation = CardDefaults.cardElevation(6.dp),
+        shape = RoundedCornerShape(6.dp)
+    ) {
     Row() {
 
         Image(
