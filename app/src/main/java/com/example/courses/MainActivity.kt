@@ -1,13 +1,25 @@
 package com.example.courses
 
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.expandIn
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -75,15 +87,21 @@ class MainActivity : ComponentActivity() {
 }
 
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 
 fun GridOfTopics() {
     val listOfTopics = Datasource.topics
     var expanded by remember { mutableStateOf(false) }
     var identificatorOfCard by remember { mutableStateOf(0) }
+  //var visible by remember { mutableStateOf(false) }
+  //
+
+   // var gridFocusable by remember { mutableStateOf(true) }
 
     Box() {
         LazyVerticalGrid(
+
             columns = GridCells.Fixed(2),
             contentPadding = PaddingValues(8.dp, 8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -91,23 +109,40 @@ fun GridOfTopics() {
         ) {
             items(listOfTopics) { topic ->
 
-                TopicShowing(topic, modifier=Modifier.clickable(onClick = {expanded=!expanded ;identificatorOfCard = topic.hashCode(); Log.d("Expanded", "$expanded");Log.d("HashCodeCard", "$identificatorOfCard")}))
+                TopicShowing(
+                    topic,
+                    modifier = Modifier.clickable(onClick = {
+                        expanded = !expanded
+                        identificatorOfCard = topic.hashCode()
+                        Log.d("Expanded", "$expanded")
+                        Log.d("HashCodeCard", "$identificatorOfCard")
+
+                    })
+
+                )
 
             }
         }
-        if(expanded==true) {
-            listOfTopics.forEach{
-                if(it.hashCode()==identificatorOfCard){
-                    ElectedTopicShowing(it, modifier = Modifier.align(Alignment.Center).zIndex(1f)) // Aqui debe ir otra composable function para que muestre el Card mas grande que tenga un boton cerrar.
+      //  if (expanded == true) {
+            listOfTopics.forEach {
+                if (it.hashCode() == identificatorOfCard) {
+
+                    ElectedTopicShowing(
+                        it, modifier = Modifier
+                            .align(Alignment.Center)
+                            .fillMaxWidth(),
+                    expanded
+                    )
                 }
             }
-        }
 
+       // }
 
     }
 }
 
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun TopicShowing(topic: Topic, modifier: Modifier) {
 
@@ -119,106 +154,126 @@ fun TopicShowing(topic: Topic, modifier: Modifier) {
     val courseQuantity = topic.courseQuantity.toString()
 
 
+        Card(
+            modifier = modifier,
+            elevation = CardDefaults.cardElevation(6.dp),
+            shape = RoundedCornerShape(6.dp)
+        ) {
+            Row(modifier = modifier) {
 
-    Card(
-        modifier = modifier,
-        elevation = CardDefaults.cardElevation(6.dp),
-        shape = RoundedCornerShape(6.dp)
-    ) {
-    Row() {
-
-        Image(
-            painter = painterResource(id = topic.imageResourceId),
-            contentDescription = null,
-            modifier = Modifier
-                .size(68.dp, 68.dp)
-        )
-        Column() {
-            Text(
-                text = stringResource(id = topic.titleResourceId),
-                modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom= 8.dp),
-                //style = MaterialTheme.typography.bodySmall
-                style = MaterialTheme.typography.bodyMedium
-            )
-          Row(
-                /*modifier = Modifier
-                    .padding(top = 8.dp)
-                   // .background(Color.Yellow)
-                    .requiredHeight(textHeightDp),
-                horizontalArrangement = Arrangement.Start,*/
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_grain),
+                Image(
+                    painter = painterResource(id = topic.imageResourceId),
                     contentDescription = null,
                     modifier = Modifier
-                        .padding(start = 16.dp).align(Alignment.Top)
-                      /*  .padding(
-                            top = 2.dp,
-                            bottom = 2.dp
-                        )*///El Padding interno es para achicar el Icono
+                        .size(68.dp, 68.dp)
                 )
+                Column() {
+                    Text(
+                        text = stringResource(id = topic.titleResourceId),
+                        modifier = Modifier.padding(
+                            start = 16.dp,
+                            top = 16.dp,
+                            end = 16.dp,
+                            bottom = 8.dp
+                        ),
+                        //style = MaterialTheme.typography.bodySmall
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Row(
+                        /*modifier = Modifier
+                            .padding(top = 8.dp)
+                           // .background(Color.Yellow)
+                            .requiredHeight(textHeightDp),*/
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
 
-                Text(
-                    text = courseQuantity,
-                    modifier = Modifier
-                        .padding(start = 8.dp)
-                        .fillMaxHeight(),
-                    //style = textStyleHeight
-                    style = MaterialTheme.typography.labelMedium
-                )
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_grain),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .padding(start = 16.dp)
+                                .align(Alignment.Top)
+                            /*  .padding(
+                                  top = 2.dp,
+                                  bottom = 2.dp
+                              )*///El Padding interno es para achicar el Icono
+                        )
+
+                        Text(
+                            text = courseQuantity,
+                            modifier = Modifier
+                                .padding(start = 8.dp),
+                            //style = textStyleHeight
+                            style = MaterialTheme.typography.labelMedium
+                        )
+
+                    }
+
+                }
 
             }
-
         }
 
-    }
-}
 
 }
 
 
+@OptIn(ExperimentalAnimationApi::class)
+@SuppressLint("SuspiciousIndentation")
 @Composable
-fun ElectedTopicShowing(topic: Topic, modifier: Modifier) {
+fun ElectedTopicShowing(topic: Topic, modifier: Modifier, visible: Boolean) {
 
     val courseQuantity = topic.courseQuantity.toString()
+   // var visible by remember { mutableStateOf(false) }
 
-        Row(modifier = modifier.background(Color.LightGray)) {
-            Image(
-                painter = painterResource(id = topic.imageResourceId),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(68.dp, 68.dp)
-            )
-            Column() {
-                Text(
-                    text = stringResource(id = topic.titleResourceId),
-                    modifier = Modifier.padding(
-                        start = 16.dp,
-                        top = 16.dp,
-                        end = 16.dp,
-                        bottom = 8.dp
-                    ),
-                    style = MaterialTheme.typography.bodyMedium
+
+        Card(
+            modifier = modifier,
+            elevation = CardDefaults.cardElevation(6.dp),
+            shape = RoundedCornerShape(6.dp)
+        ) {
+            AnimatedVisibility(visible = visible)//, enter = fadeIn(initialAlpha = 50f),
+             //   exit = fadeOut(targetAlpha = 0.2f)
+             {
+            Row(modifier = Modifier.animateEnterExit(
+                enter = expandVertically()+ fadeIn(), //Esto funciona mejor que colocr los enter y exit dentro de AnimatedVisibility
+                exit = shrinkHorizontally() + fadeOut()) //Esto funciona mejor que colocr los enter y exit dentro de AnimatedVisibility
+            ) {
+                Image(
+                    painter = painterResource(id = topic.imageResourceId),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(140.dp, 140.dp)
                 )
-                Row() {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_grain),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .padding(start = 16.dp)
-                    )
+                Column() {
                     Text(
-                        text = courseQuantity,
-                        modifier = Modifier
-                            .padding(start = 8.dp),
-                        style = MaterialTheme.typography.labelMedium
+                        text = stringResource(id = topic.titleResourceId),
+                        modifier = Modifier.padding(
+                            start = 16.dp,
+                            top = 16.dp,
+                            end = 16.dp,
+                            bottom = 8.dp
+                        ),
+                        style = MaterialTheme.typography.displayMedium
                     )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_grain),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .padding(start = 16.dp)
+                        )
+                        Text(
+                            text = courseQuantity,
+                            modifier = Modifier
+                                .padding(start = 8.dp),
+                            style = MaterialTheme.typography.displayMedium
+                        )
+                    }
                 }
             }
         }
-
+    }
 }
 
 @Preview(showBackground = true)
