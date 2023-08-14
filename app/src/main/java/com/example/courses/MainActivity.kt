@@ -10,6 +10,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandIn
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -226,18 +227,17 @@ fun ElectedTopicShowing(topic: Topic, modifier: Modifier, visible: Boolean) {
     val courseQuantity = topic.courseQuantity.toString()
    // var visible by remember { mutableStateOf(false) }
 
-
         Card(
             modifier = modifier,
             elevation = CardDefaults.cardElevation(6.dp),
             shape = RoundedCornerShape(6.dp)
         ) {
-            AnimatedVisibility(visible = visible)//, enter = fadeIn(initialAlpha = 50f),
-             //   exit = fadeOut(targetAlpha = 0.2f)
-             {
+            AnimatedVisibility(visible = visible)//, enter = fadeIn(animationSpec = tween(2000)),
+              //  exit = fadeOut(animationSpec = tween(2000)))
+           {
             Row(modifier = Modifier.animateEnterExit(
-                enter = expandVertically()+ fadeIn(), //Esto funciona mejor que colocr los enter y exit dentro de AnimatedVisibility
-                exit = shrinkHorizontally() + fadeOut()) //Esto funciona mejor que colocr los enter y exit dentro de AnimatedVisibility
+                enter = expandVertically(), //Esto funciona mejor que colocr los enter y exit dentro de AnimatedVisibility
+                exit = shrinkHorizontally()) //Esto funciona mejor que colocr los enter y exit dentro de AnimatedVisibility
             ) {
                 Image(
                     painter = painterResource(id = topic.imageResourceId),
