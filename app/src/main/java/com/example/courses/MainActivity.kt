@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -25,9 +26,12 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -70,16 +74,20 @@ class MainActivity : ComponentActivity() {
 
 fun GridOfTopics() {
     val listOfTopics = Datasource.topics
-    var expanded by remember { mutableStateOf(false) }
+    var visible by remember { mutableStateOf(false) }
     var identificatorOfCard by remember { mutableStateOf(0) }
   //var visible by remember { mutableStateOf(false) }
   //
-
    // var gridFocusable by remember { mutableStateOf(true) }
+
+    val clickingCard: (Boolean) -> Unit = {
+        visible = !it
+    }
+
+
 
     Box() {
         LazyVerticalGrid(
-
             columns = GridCells.Fixed(2),
             contentPadding = PaddingValues(8.dp, 8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -90,10 +98,11 @@ fun GridOfTopics() {
                 TopicShowing(
                     topic,
                     modifier = Modifier.clickable(onClick = {
-                        expanded = !expanded
+                        clickingCard(visible)
+                        // visible = !visible
                         identificatorOfCard = topic.hashCode()
-                        Log.d("Expanded", "$expanded")
-                        Log.d("HashCodeCard", "$identificatorOfCard")
+                        //Log.d("Expanded", "$expanded")
+                        //Log.d("HashCodeCard", "$identificatorOfCard")
 
                     })
 
@@ -109,7 +118,8 @@ fun GridOfTopics() {
                         it, modifier = Modifier
                             .align(Alignment.Center)
                             .fillMaxWidth(),
-                    expanded
+                        visible,
+                        clickingCard
                     )
                 }
             }
@@ -199,7 +209,7 @@ fun TopicShowing(topic: Topic, modifier: Modifier) {
 @OptIn(ExperimentalAnimationApi::class)
 @SuppressLint("SuspiciousIndentation")
 @Composable
-fun ElectedTopicShowing(topic: Topic, modifier: Modifier, visible: Boolean) {
+fun ElectedTopicShowing(topic: Topic, modifier: Modifier, visible: Boolean, changingState: (Boolean) -> Unit) {
 
     val courseQuantity = topic.courseQuantity.toString()
    // var visible by remember { mutableStateOf(false) }
@@ -212,9 +222,12 @@ fun ElectedTopicShowing(topic: Topic, modifier: Modifier, visible: Boolean) {
             AnimatedVisibility(visible = visible)//, enter = fadeIn(animationSpec = tween(2000)),
               //  exit = fadeOut(animationSpec = tween(2000)))
            {
-            Row(modifier = Modifier.animateEnterExit(
-                enter = expandVertically(), //Esto funciona mejor que colocr los enter y exit dentro de AnimatedVisibility
-                exit = shrinkHorizontally()) //Esto funciona mejor que colocr los enter y exit dentro de AnimatedVisibility
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .animateEnterExit(
+                    enter = expandVertically(), //Esto funciona mejor que colocr los enter y exit dentro de AnimatedVisibility
+                    exit = shrinkHorizontally()
+                ) //Esto funciona mejor que colocr los enter y exit dentro de AnimatedVisibility
             ) {
                 Image(
                     painter = painterResource(id = topic.imageResourceId),
@@ -248,10 +261,20 @@ fun ElectedTopicShowing(topic: Topic, modifier: Modifier, visible: Boolean) {
                         )
                     }
                 }
+                Spacer(modifier = Modifier.weight(1f))
+                CloseButton(visible,changingState)
             }
         }
     }
 }
+
+@Composable
+fun CloseButton(visible: Boolean, changingState: (Boolean)-> Unit) {
+    IconButton(onClick = {changingState(visible)}) {
+        Icon(imageVector = Icons.Default.Close, contentDescription = "Cerrar Ventana" )
+    }
+}
+
 
 @Preview(showBackground = true)
 @Composable
