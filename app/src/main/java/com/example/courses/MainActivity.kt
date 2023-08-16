@@ -11,6 +11,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,11 +43,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.example.courses.data.Datasource
 import com.example.courses.model.Topic
 import com.example.courses.ui.theme.CoursesTheme
@@ -85,7 +88,6 @@ fun GridOfTopics() {
     }
 
 
-
     Box() {
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
@@ -110,12 +112,15 @@ fun GridOfTopics() {
 
             }
         }
+        if(visible==true) {
+            Box(modifier = Modifier.fillMaxSize().background(Color.Gray.copy(alpha=0.7f)).zIndex(2f))
+        }
       //  if (expanded == true) {
             listOfTopics.forEach {
                 if (it.hashCode() == identificatorOfCard) {
 
                     ElectedTopicShowing(
-                        it, modifier = Modifier
+                        it, modifier = Modifier.zIndex(3f)
                             .align(Alignment.Center)
                             .fillMaxWidth(),
                         visible,
